@@ -1,441 +1,112 @@
-# PraxiCloud Core Kestrel
-PraxiCloud Libraries are a set of common utilities and tools for general software development that simplify common development efforts for software development. The core kestrel library contains easy to use tools such as middleware components, availability and health probes.
+# PraxiCloud GRPC
+PraxiCloud Libraries are a set of common utilities and tools for general software development that simplify common development efforts for software development. The GRPC library includes two portions, one for simplifying client tasks and the other for simplifying the hosting of GRPC services through the use of Kestrel.
 
 
 
 # Installing via NuGet
 
-Install-Package PraxiCloud-Core-Kestrel
+**Server library**
 
+Install-Package PraxiCloud-Grpc-Server
 
+**Client library**
 
-# Kestrel Middleware
+Install-Package PraxiCloud-Grpc-Client
 
-
+# GRPC Client 
 
 ## Key Types and Interfaces
 
 |Class| Description | Notes |
 | ------------- | ------------- | ------------- |
-|**SasAuthenticationMiddleware**|A base class that issues Shared Access Tokens and validates them when provided in the header.| The authentication middleware uses a specialized authentication path. |
-|**UnhandledMiddleware**|A middleware component that can be added to the pipeline to respond if no other components have.|  |
-|**MultiProbeMiddleware**|A middleware component that custom HTTP GET probes that are fully customized by the implementer.|  |
+|**GrpcClient**|**GetMetadata** Converts a C# dictionary into GRPC Metdata object.<br />**GetCallOptions** Provides the ability to pass cancellation tokens and credentials to calls.<br />**GetChannelOptions** Provides the ability to validate that server certificates and control the maximum concurrent connections to the host.<br />**GetChannel** Creates the GRPC channel to the host, which can be reused.| Direct supported values for Metadata are CLR strings and byte arrays. Other types are converted to a string through the ToString() method. |
 
 ## Sample Usage
 
-### Create Custom SAS Authentication Middleware
+### Create a Simple Client
 
 ```csharp
-namespace mydemoauthentication
-{
-    #region Using Clauses
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.Logging;
-    using praxicloud.core.security;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using praxicloud.core.kestrel.middleware.authentication;
-    #endregion
+var callOptions = GrpcClient.GetCallOptions(cancellationToken: ctx);
+using var channel = GrpcClient.GetChannel(new Uri("https://localhost:10010"), GrpcClient.GetChannelOptions(100, true, true));
+var client = new PraxiCloudPipelineService.PraxiCloudPipelineServiceClient(channel);
 
-    /// <summary>
-    /// A middleware component that does basic SAS validation
-    /// </summary>
-    public sealed class DemoSasAuthenticationMiddleware : SasAuthenticationMiddleware
-    {
-        #region Constructors
-        /// <summary>
-        /// Initializes a new instance of the type
-        /// </summary>
-        /// <param name="next">The next middleware component to execute</param>
-        public DemoSasAuthenticationMiddleware(RequestDelegate next, IDependencyService dependencyService, IMetricFactory metricFactory, ILoggerFactory loggerFactory) 
-            :base(next, dependencyService, metricFactory, loggerFactory, TimeSpan.FromMinutes(60),  "demopolicy", sasTokenPolicyKey, "Authorization")
-        {
+var request = new TestRequest { Message = $"Test message {index++}" };
+var response = await client.TestAsync(request, callOptions);
 
-        }
-        #endregion
-        #region Methods
-        /// <inheritdoc />
-        protected override Task<bool> AuthenticateAsync(HttpRequest request, AuthenticationRequestPayload requestPayload, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(true);
-        }
-        #endregion
-    }
-}
-```
-
-
-### Create Unhandled Request Middleware
-
-```csharp
-// Added as the last pipeline middleware
-app.UseUnhandled(logger, new UnhandledConfiguration
-                 {
-                     ContentType = "application/json",
-                     Response = "{ \"Result": \"Nobody is home" }",
-                     ResponseCode = 404
-                 }, null);
-```
-
-### Create Multi Probe Middleware
-
-```csharp
-public class MyCustomLogic : IMultiProbeValidator
-{
-    /// <inheritdoc />
-    public Task<bool> ValidateAsync(int indexValue, string endpoint, CancellationToken cancellationToken)
-    {
-        var success = false;
-        
-        switch(indexValue)
-        {
-            case 1:
-                Debug.Print("Received health probe request");
-                success = true;
-                break;
-                
-            case 2:
-                Debug.Print("Received availability probe request");                
-                success = true;
-                break;
-        }
-        
-        return Task.FromResult(success);
-    }
-    
-    public Task<bool> UnknownEndpointAsync(string endpoint, CancellationToken cancellationToken)
-    {
-        // Perform logic to handle unknown probes
-        
-        return Task.FromResult(true);
-    }
-}
-
-app.UseMultiProbe(new MultiProbeConfiguration
-                  {
-                      {1, "health"},
-                      {2, "availability"}
-                  }, loggerFactory, new MyCustomLogic());
+Console.WriteLine($"Response was {response.Message}");
 ```
 
 ## Additional Information
 
-For additional information the Visual Studio generated documentation found [here](./documents/praxicloud.core.kestrel/praxicloud.core.kestrel.xml), can be viewed using your favorite documentation viewer.
+For additional information the Visual Studio generated documentation found [here](./documents/praxicloud.grpc/praxicloud.grpc.client.xml), can be viewed using your favorite documentation viewer.
 
-# Web Sockets
-
-
+# GRPC Server 
 
 ## Key Types and Interfaces
 
 |Class| Description | Notes |
 | ------------- | ------------- | ------------- |
-|**WebSocketHandler**|A base class for web socket sessions that provides functionality such as buffer pooling, metrics and send / receive methods.<br />***BufferPool*** exposes the buffer pool for use with allocations to protect memory.<br />***Logger*** provides access to the logger for the session, to write debugging and diagnostics information to.<br />***MetricFactory*** provides access to the factory to create metrics.<br />***ReceiveMessagesAsync*** is a message pump that handles the buffer management etc. around receiving a message.<br />***SendMessageAsync*** sends a message as a byte array to the client.| To use this with the Web Socket middleware create a new instance on accepting a new socket and pass the socket to the ProcessAsync method. |
+|**GrpcConfiguration**| A configuration object that describes the Kestrel server environment. | If certificate files are being used it is recommended to use the CertificateFileGrpcConfiguration object |
+|**CertificateFileGrpcConfiguration**|A configuration object that describes the Kestrel server environment using a certificate file with password.|  |
+|**GrpcKestrelServer**|An HTTP/2 with TLS v1.2 with Kestrel where all proto files and GRPC service implementations can be surfaced.|  |
+|**GrpcKestrelStartup**|The startup object that defines the GRPC mappings.|  |
 
 ## Sample Usage
 
-### Create Custom Web Socket Handler
+### Create a Custom Startup Type and Register GRPC Services
 
 ```csharp
 /// <summary>
-/// The demo web socket handler
+/// GRPC service startup
 /// </summary>
-public class DemoWebSocketHandler : WebSocketHandler
+public sealed class DemoStartup : GrpcKestrelStartup
 {
     #region Methods
-    /// <summary>
-    /// Initializes a new instance of the type
-    /// </summary>
-    /// <param name="metricRecorder">The metric recorder to write to</param>
-    /// <param name="loggerFactory">A logger that can be used to write debugging and diagnostics information</param> 
-    public DemoWebSocketHandler(IDependencyService dependencyService, configuration.IWebSocketConfiguration webSocketConfiguration, IMetricFactory metricFactory, ILoggerFactory loggerFactory, IBufferPool bufferPool) : base(dependencyService, webSocketConfiguration, metricFactory, loggerFactory, bufferPool)
-    {
-    }
-    
     /// <inheritdoc />
-    protected override async Task MessageReceivedAsync(byte[] message, CancellationToken cancellationToken)
+    protected override void MapGrpcServices(IEndpointRouteBuilder routeBuilder)
     {
-        using (Logger.BeginScope("Received message"))
-        {
-    	    if ((message?.Length ?? 0) > 0)
-    	    {
-    	        try
-    	        {
-    	    	    Logger.LogDebug("Deserializing telemetry message with {byteCount} bytes", message.Length);
-    	    	    
-    	    	    await SendMessageAsync(Encoding.ASCII.GetBytes("Received that message"), false, cancellationToken).ConfigureAwait(false);
-    	        }
-    	        catch (Exception e)
-    	        {
-    	    	    Logger.LogError(e, "Error processing received message");
-    	        }
-    	    }
-    	    else
-    	    {
-    	        Logger.LogWarning("Message receied that was null or 0 length");
-    	    }
-        }
-    }
-    #endregion
-}
-
-```
-
-
-## Additional Information
-
-For additional information the Visual Studio generated documentation found [here](./documents/praxicloud.core.kestrel/praxicloud.core.kestrel.xml), can be viewed using your favorite documentation viewer.
-
-
-# Probes
-
-
-
-## Key Types and Interfaces
-
-|Class| Description | Notes |
-| ------------- | ------------- | ------------- |
-|**KestrelAvailabilityProbe**|A probe host that returns successful HTTP GET responses when queried if the service should be considered ready to accept traffic. This leverages a Kestrel server for HTTP logic.|  |
-|**KestrelHealthProbe**|A probe host that returns successful HTTP GET responses when queried if the service should be considered healthy. This leverages a Kestrel server for HTTP logic.|  |
-|**KestrelDualProbe**|A dual probe that implements the availability and health probe logic. The single implementation allows for the hosting of two endpoints on the same port and saves resources on the Kestrel usage. This leverages a Kestrel server for HTTP logic.| It is recommended to use this implementation over the individual health probes in scenarios where both will be implemented. |
-
-## Sample Usage
-
-### Create Availability HTTP Probe 
-
-```csharp
-const int Port = 10580;
-
-var host = new KestrelAvailabilityProbe(new KestrelHostConfiguration
-{
-    Address = IPAddress.Any,
-    Port = Port,
-    Certificate = null,
-    KeepAlive = TimeSpan.FromSeconds(180),
-    MaximumConcurrentConnections = 100,
-    UseNagle = false
-}, loggerFactory, invocationCounter);
-
-
-await host.StartAsync(CancellationToken.None).ConfigureAwait(false);
-
-// Perform application logic until and end the probe when shutdown
-
-await host.StopAsync(CancellationToken.None).ConfigureAwait(false);
-await host.Task.ConfigureAwait(false);
-
-
-public sealed class ProbeInvocationCounter : IAvailabilityCheck
-{
-    #region Variables
-    /// <summary>
-    /// The number of times the availability handler has been invoked
-    /// </summary>
-    private long _availabilityCount;
-    #endregion
-    #region Properties
-    /// <summary>
-    /// True if the availability results should return success
-    /// </summary>
-    public bool IsAvailable { get; set; } = true;
-    
-    /// <summary>
-    /// The number of times the availability handler has been invoked
-    /// </summary>
-    public long AvailabiltyCount => _availabilityCount;
-    #endregion
-    #region Methods
-    /// <inheritdoc />
-    public Task<bool> IsAvailableAsync()
-    {
-        Interlocked.Increment(ref _availabilityCount);
-    
-        return Task.FromResult(IsAvailable);
+        routeBuilder.MapGrpcService<TestMessageService>();
     }
     #endregion
 }
 ```
-
-### Create Health HTTP Probe
-
-```csharp
-const int Port = 10580;
-
-var invocationCounter = new ProbeInvocationCounter();
-var loggerFactory = GetLoggerFactory();
-var host = new KestrelHealthProbe(new KestrelHostConfiguration
-{
-    Address = IPAddress.Any,
-    Port = Port,
-    Certificate = null,
-    KeepAlive = TimeSpan.FromSeconds(180),
-    MaximumConcurrentConnections = 100,
-    UseNagle = false
-}, loggerFactory, invocationCounter);
-
-
-await host.StartAsync(CancellationToken.None).ConfigureAwait(false);
-
-// Perform application logic until and end the probe when shutdown
-
-await host.StopAsync(CancellationToken.None).ConfigureAwait(false);
-await host.Task.ConfigureAwait(false);
-
-
-public sealed class ProbeInvocationCounter : IHealthCheck
-{
-    #region Variables
-    /// <summary>
-    /// The number of times the health handler has been invoked
-    /// </summary>
-    private long _healthCount;
-    #endregion
-    #region Properties
-    /// <summary>
-    /// True if the health results should return success
-    /// </summary>
-    public bool IsHealthy { get; set; } = true;
-    
-    /// <summary>
-    /// The number of times the health handler has been invoked
-    /// </summary>
-    public long HealthCount => _healthCount;
-    #endregion
-    #region Methods
-    /// <inheritdoc />
-    /// <inheritdoc />
-    public Task<bool> IsHealthyAsync()
-    {
-        Interlocked.Increment(ref _healthCount);
-    
-        return Task.FromResult(IsHealthy);
-    }
-    #endregion
-}
-```
-
-### Create Dual HTTP Probes 
+### Create a Simple TLS v1.2 GRPC Server
 
 ```csharp
-const int Port = 10580;
+var configuration = new CertificateFileGrpcConfiguration
+{ 
+	AllowSelfSigned = true,
+	CheckCertificateRevocation = false,
+	ClientCertificateMode = ClientCertificateMode.NoCertificate,
+	EnableConnectionLogging = false,
+	EnableNonGrpcWarningMessage = true,
+	KeepAliveTimeout = TimeSpan.FromSeconds(120),
+	MaximumConcurrentConnections = 100,
+	MaximumConcurrentUpgradedConnections = 100,
+	MaximumStreamsPerConnection = 100,
+	NonGrpcWarningMessage = "This requires a GRPC client",
+	CertificateFilePassword = Environment.GetEnvironmentVariable("PraxiDemo:CertificatePassword"),
+	CertificateFileName = "./certs/my_contoso_local.pfx",
+	UseDeveloperExceptionPage = true,
+	UseMultipleForConnectionCounts = true
+};
 
-var invocationCounter = new ProbeInvocationCounter();
-var loggerFactory = GetLoggerFactory();
-var host = new KestrelDualProbe(new KestrelHostConfiguration
+var server = new GrpcKestrelServer<DemoStartup>(configuration);
+var hostBuilder = server.CreateHostBuilder(IPAddress.Any, 10010);
+
+using (var host = hostBuilder.Build())
 {
-    Address = IPAddress.Any,
-    Port = Port,
-    Certificate = null,
-    KeepAlive = TimeSpan.FromSeconds(180),
-    MaximumConcurrentConnections = 100,
-    UseNagle = false
-}, loggerFactory, invocationCounter, invocationCounter);
+	await host.StartAsync(ContainerLifecycle.CancellationToken).ConfigureAwait(false);
 
+	while (_continue)
+	{
+		await Task.Delay(100).ConfigureAwait(false);
+	}
 
-public sealed class ProbeInvocationCounter : IHealthCheck, IAvailabilityCheck
-{
-    #region Variables
-    /// <summary>
-    /// The number of times the availability handler has been invoked
-    /// </summary>
-    private long _availabilityCount;
-    
-    /// <summary>
-    /// The number of times the health handler has been invoked
-    /// </summary>
-    private long _healthCount;
-    #endregion
-    #region Properties
-    /// <summary>
-    /// True if the availability results should return success
-    /// </summary>
-    public bool IsAvailable { get; set; } = true;
-    
-    /// <summary>
-    /// True if the health results should return success
-    /// </summary>
-    public bool IsHealthy { get; set; } = true;
-    
-    /// <summary>
-    /// The number of times the availability handler has been invoked
-    /// </summary>
-    public long AvailabiltyCount => _availabilityCount;
-    
-    /// <summary>
-    /// The number of times the health handler has been invoked
-    /// </summary>
-    public long HealthCount => _healthCount;
-    #endregion
-    #region Methods
-    /// <inheritdoc />
-    public Task<bool> IsAvailableAsync()
-    {
-        Interlocked.Increment(ref _availabilityCount);
-    
-        return Task.FromResult(IsAvailable);
-    }
-    
-    /// <inheritdoc />
-    public Task<bool> IsHealthyAsync()
-    {
-        Interlocked.Increment(ref _healthCount);
-    
-        return Task.FromResult(IsHealthy);
-    }
-    #endregion
+	await host.StopAsync(ContainerLifecycle.CancellationToken).ConfigureAwait(false);
 }
 ```
 
 ## Additional Information
 
-For additional information the Visual Studio generated documentation found [here](./documents/praxicloud.core.kestrel/praxicloud.core.kestrel.xml), can be viewed using your favorite documentation viewer.
-
-# Kestrel Host
-
-
-
-## Key Types and Interfaces
-
-|Class| Description | Notes |
-| ------------- | ------------- | ------------- |
-|**KestrelHost**|A base  type that can be used to quickly setup new Kestrel web servers with the basic configuration options used by default. The type provides some thread safety around start and stop operations as well as expose convenience instances such as loggers, tasks and cancellation tokens that can be used to indicate shutdown.| This type implements the basic plumbing of the Kestrel web servers. Probes rely on this for consistent startup. |
-
-## Sample Usage
-
-### Start a Kestrel Web Server 
-
-```csharp
-var host = new KestrelHost<DemoStartup>(new KestrelHostConfiguration
-{
-    Address = IPAddress.Any,
-    Port = 10080,
-    Certificate = null,
-    UseNagle = true,
-    KeepAlive = TimeSpan.FromSeconds(120),
-    MaximumConcurrentConnections = 100,
-    AllowedProtocols = SslProtocols.Tls12 
-}, loggerFactory);
-
-await host.StartAsync().ConfigureAwait(false);
-
-// Perform logic or wait here until ready to shutdown web server
-
-await host.StopAsync().ConfigureAwait(false);
-await host.Task.ConfigureAwait(false);
-
-public class DemoStartup : IKestrelStartup
-{
-    #region Methods
-    /// <inheritdoc />
-    public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-    {
-        // Add middleware and build processing pipeline for Kestrel here
-    }
-    #endregion
-}
-```
-
-
-## Additional Information
-
-For additional information the Visual Studio generated documentation found [here](./documents/praxicloud.core.kestrel/praxicloud.core.kestrel.xml), can be viewed using your favorite documentation viewer.
+For additional information the Visual Studio generated documentation found [here](./documents/praxicloud.grpc/praxicloud.grpc.server.xml), can be viewed using your favorite documentation viewer.

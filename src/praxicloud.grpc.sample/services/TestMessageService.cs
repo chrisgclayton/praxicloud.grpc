@@ -10,14 +10,14 @@ namespace praxicloud.grpc.sample.services
 {
     public sealed class TestMessageService : PraxiCloudPipelineService.PraxiCloudPipelineServiceBase
     {
-        public override async Task<TestResponse> Test(TestRequest request, ServerCallContext context)
+        public override Task<TestResponse> Test(TestRequest request, ServerCallContext context)
         {
             var response = new TestResponse 
             { 
                 Message = $"{request.Message}_tested"
             };
 
-            return response;
+            return Task.FromResult(response);
         }
     }
 }

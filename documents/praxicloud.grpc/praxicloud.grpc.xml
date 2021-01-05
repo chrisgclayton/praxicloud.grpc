@@ -1,0 +1,351 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>praxicloud.grpc</name>
+    </assembly>
+    <members>
+        <member name="T:praxicloud.grpc.client.GrpcClient">
+            <summary>
+            A helper class for GRPC clients 
+            </summary>
+        </member>
+        <member name="M:praxicloud.grpc.client.GrpcClient.GetChannel(System.Uri,Grpc.Net.Client.GrpcChannelOptions)">
+            <summary>
+            Gets a new channel from for communications with the server URI identified
+            </summary>
+            <param name="serverUri">The URI of the hosting GRPC server</param>
+            <param name="channelOptions">The options used to configure the channel</param>
+            <returns></returns>
+        </member>
+        <member name="M:praxicloud.grpc.client.GrpcClient.GetCallMetadata(System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            Converts a dictionary to a metadata object. If null or empty the Metadata object returned will be null;
+            </summary>
+            <param name="metadata">The metadata to be added for the call. Only byte[] and string types are used without conversion, all others use the ToString() function to present as a string.</param>
+            <returns>A populated metadata instance or null if empty</returns>
+        </member>
+        <member name="M:praxicloud.grpc.client.GrpcClient.GetCallOptions(Grpc.Core.Metadata,Grpc.Core.CallCredentials,System.Nullable{System.TimeSpan},System.Threading.CancellationToken)">
+            <summary>
+            Creates a populated call options instance based on the provided parameters
+            </summary>
+            <param name="metadata">The metadata to be added for the call.</param>
+            <param name="credentials">The credentials associated with the call</param>
+            <param name="timeout">The timespan to add to the current UTC time to act as the call deadline</param>
+            <param name="cancellationToken">A best effort cancellation token</param>
+            <returns>A call options instace</returns>
+        </member>
+        <member name="M:praxicloud.grpc.client.GrpcClient.GetChannelOptions(System.Int32,System.Func{System.Net.Http.HttpRequestMessage,System.Security.Cryptography.X509Certificates.X509Certificate2,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors,System.Boolean},System.Net.IWebProxy,Grpc.Core.ChannelCredentials)">
+            <summary>
+            Builds the common GRPC channel options for TLS 1.2 and HTTP/2
+            </summary>
+            <param name="maximumConcurrentConnections">The maximum number of concurrent connections allowed to a host</param>
+            <param name="remoteCertificateValidation">The remote certificate callback in use</param>
+            <param name="webProxy">The web proxy in use if one is required</param>
+            <param name="credentials">Credentials associated with the channel if provided</param>
+            <returns>A populated channel options instance</returns>
+        </member>
+        <member name="M:praxicloud.grpc.client.GrpcClient.GetChannelOptions(System.Int32,System.Boolean,System.Boolean,System.Net.IWebProxy,Grpc.Core.ChannelCredentials)">
+            <summary>
+            Builds the common GRPC channel options for TLS 1.2 and HTTP/2
+            </summary>
+            <param name="maximumConcurrentConnections">The maximum number of concurrent connections allowed to a host</param>
+            <param name="webProxy">The web proxy in use if one is required</param>
+            <param name="allowSelfSignedCertificates">True if self signed permissions should be allowed, ignored if remoteCertificateValidation is provided</param>
+            <param name="allowHostNameMismatch">True to allow the host name on the certificate mismatch when allow self signed is true. Not recommended for production.</param>
+            <param name="credentials">Credentials associated with the channel if provided</param>
+            <returns>A populated channel options instance</returns>
+        </member>
+        <member name="M:praxicloud.grpc.client.GrpcClient.ValidateServerCertificate(System.Net.Http.HttpRequestMessage,System.Security.Cryptography.X509Certificates.X509Certificate2,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors)">
+            <summary>
+            Performs client certificate validation
+            </summary>
+            <param name="certificate">The client provided certificate to validate</param>
+            <param name="chain">The certificate chain that is associated with the client certificate</param>
+            <param name="policyErrors">A list of policy errors</param>
+            <param name="requestMessage">The request message associated with the validation</param>
+            <returns>True if the certificate should be accepted</returns>
+        </member>
+        <member name="M:praxicloud.grpc.client.GrpcClient.ValidateServerCertificateAllowSelfSigned(System.Net.Http.HttpRequestMessage,System.Security.Cryptography.X509Certificates.X509Certificate2,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors)">
+            <summary>
+            Performs client certificate validation, allowing self signed
+            </summary>
+            <param name="certificate">The client provided certificate to validate</param>
+            <param name="chain">The certificate chain that is associated with the client certificate</param>
+            <param name="policyErrors">A list of policy errors</param>
+            <param name="requestMessage">The request message associated with the validation</param>
+            <returns>True if the certificate should be accepted</returns>
+        </member>
+        <member name="M:praxicloud.grpc.client.GrpcClient.ValidateServerCertificateAllowSelfSignedAndHostMismatch(System.Net.Http.HttpRequestMessage,System.Security.Cryptography.X509Certificates.X509Certificate2,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors)">
+            <summary>
+            Performs client certificate validation, allowing self signed
+            </summary>
+            <param name="certificate">The client provided certificate to validate</param>
+            <param name="chain">The certificate chain that is associated with the client certificate</param>
+            <param name="policyErrors">A list of policy errors</param>
+            <param name="requestMessage">The request message associated with the validation</param>
+            <returns>True if the certificate should be accepted</returns>
+        </member>
+        <member name="T:praxicloud.grpc.server.CertificateFileGrpcConfiguration">
+            <summary>
+            GRPC server configuratio that uses a certificate file found locally
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.CertificateFileGrpcConfiguration.CertificateFileName">
+            <summary>
+            The name of the certificate file
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.CertificateFileGrpcConfiguration.CertificateFilePassword">
+            <summary>
+            The password for the certificate file
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.CertificateFileGrpcConfiguration.ServerCertificate">
+            <inheritdoc />
+        </member>
+        <member name="T:praxicloud.grpc.server.GrpcConfiguration">
+            <summary>
+            GRPC server configuration
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.GrpcConfiguration.UseMultipleForConnectionCounts">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.grpc.server.GrpcConfiguration.MaximumConcurrentConnections">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.grpc.server.GrpcConfiguration.MaximumConcurrentUpgradedConnections">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.grpc.server.GrpcConfiguration.KeepAliveTimeout">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.grpc.server.GrpcConfiguration.RequestHeadersTimeout">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.grpc.server.GrpcConfiguration.MaximumStreamsPerConnection">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.grpc.server.GrpcConfiguration.ServerCertificate">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.grpc.server.GrpcConfiguration.UnixSocketPath">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.grpc.server.GrpcConfiguration.CheckCertificateRevocation">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.grpc.server.GrpcConfiguration.ClientCertificateMode">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.grpc.server.GrpcConfiguration.UseDeveloperExceptionPage">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.grpc.server.GrpcConfiguration.UseDeveloperExceptionPageNonProduction">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.grpc.server.GrpcConfiguration.EnableNonGrpcWarningMessage">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.grpc.server.GrpcConfiguration.NonGrpcWarningMessage">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.grpc.server.GrpcConfiguration.EnableConnectionLogging">
+            <inheritdoc />
+        </member>
+        <member name="P:praxicloud.grpc.server.GrpcConfiguration.AllowSelfSigned">
+            <inheritdoc />
+        </member>
+        <member name="T:praxicloud.grpc.server.GrpcKestrelServer`1">
+            <summary>
+            A Kestrel based Grpc server that uses HTTP/2 with TLS 1.2
+            </summary>
+            <typeparam name="T">The startup type of the Kestrel server</typeparam>
+        </member>
+        <member name="M:praxicloud.grpc.server.GrpcKestrelServer`1.#ctor(praxicloud.grpc.server.IGrpcConfiguration)">
+            <summary>
+            Initializes a new instance of the type
+            </summary>
+            <param name="configuration">The configuration for the Kestrel Server</param>
+        </member>
+        <member name="P:praxicloud.grpc.server.GrpcKestrelServer`1.Configuration">
+            <summary>
+            The configuration that defines the Kestrel Servers behavior
+            </summary>
+        </member>
+        <member name="M:praxicloud.grpc.server.GrpcKestrelServer`1.CreateHostBuilder(System.Net.IPAddress,System.UInt16)">
+            <summary>
+            A method that creates creates the Kestrel Host Builder to listen on the specified IP Address and Port
+            </summary>
+            <param name="ipAddress">The IP Address to listen on</param>
+            <param name="port">The port to listen on</param>
+            <returns>A Kestrel host builder that has been configured to listen for GRPC requests</returns>
+        </member>
+        <member name="M:praxicloud.grpc.server.GrpcKestrelServer`1.ConfigureServices(Microsoft.Extensions.Hosting.HostBuilderContext,Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            A method that can be overridden to add dependencies to the container
+            </summary>
+            <param name="context">The host builder context</param>
+            <param name="services">The service collection to add the dependencies to</param>
+        </member>
+        <member name="M:praxicloud.grpc.server.GrpcKestrelServer`1.ValidateClientCertificate(System.Security.Cryptography.X509Certificates.X509Certificate2,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors)">
+            <summary>
+            Performs client certificate validation
+            </summary>
+            <param name="certificate">The client provided certificate to validate</param>
+            <param name="chain">The certificate chain that is associated with the client certificate</param>
+            <param name="policyErrors">A list of policy errors</param>
+            <returns>True if the certificate should be accepted</returns>
+        </member>
+        <member name="T:praxicloud.grpc.server.GrpcKestrelStartup">
+            <summary>
+            A Kestrel Startup type that handles GRPC requests
+            </summary>
+        </member>
+        <member name="F:praxicloud.grpc.server.GrpcKestrelStartup.DefaultNonGrpcWarningMessage">
+            <summary>
+            The default GRPC client requirement message content
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.GrpcKestrelStartup.StartupConfiguration">
+            <summary>
+            The configuration for the startup object
+            </summary>
+        </member>
+        <member name="M:praxicloud.grpc.server.GrpcKestrelStartup.MapGrpcServices(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)">
+            <summary>
+            Provides a method for derived types to register their GRPC types that are exposed by the service by calling the endpoints.MapGrpcService{T} method.
+            </summary>
+            <param name="routeBuilder">The builder that exposes the endpoints configuration details</param>
+        </member>
+        <member name="M:praxicloud.grpc.server.GrpcKestrelStartup.ConfigureEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)">
+            <summary>
+            Provid-es a way to configure additional HTTP/2 TLS 1.2 endpoints
+            </summary>
+            <param name="routeBuilder">The route builder to setup the configuration on</param>
+        </member>
+        <member name="M:praxicloud.grpc.server.GrpcKestrelStartup.ConfigureAdditional(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            Configures the startup method beyond the standard GRPC configurations
+            </summary>
+            <param name="app">The app builder to configure</param>
+            <param name="env">The web hosting environment being configured</param>
+        </member>
+        <member name="M:praxicloud.grpc.server.GrpcKestrelStartup.ConfigureAdditionalServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Maps additional services in use by the GRPC startup
+            </summary>
+            <param name="services">The services collection to add the services to</param>
+        </member>
+        <member name="M:praxicloud.grpc.server.GrpcKestrelStartup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds specific services for the current startup
+            </summary>
+            <param name="services">The service collection to add the GRPC service to</param>
+        </member>
+        <member name="M:praxicloud.grpc.server.GrpcKestrelStartup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,praxicloud.grpc.server.IGrpcStartupConfiguration)">
+            <summary>
+            Configures the startup method adding developer exception pages, routing etc.
+            </summary>
+            <param name="app">The app builder to configure</param>
+            <param name="env">The web hosting environment being configured</param>
+            <param name="startupConfiguration">The startup configuration</param>
+        </member>
+        <member name="M:praxicloud.grpc.server.GrpcKestrelStartup.WriteGrpcErrorMessageAsync(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            A method that can be overridden to write a different content type and error message for only GRPC supported requests
+            </summary>
+            <param name="context">The HTTP Context to write the warning to</param>
+        </member>
+        <member name="T:praxicloud.grpc.server.IGrpcConfiguration">
+            <summary>
+            The configuration for a GRPC server
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.IGrpcConfiguration.UseMultipleForConnectionCounts">
+            <summary>
+            True if the connection count numbers specified should be multiplied by the machines core count. Defaults to false.
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.IGrpcConfiguration.MaximumConcurrentConnections">
+            <summary>
+            The maximum number of concurrent connections, or multiplier by core count based on UseMultipleForConnectionCounts value, allowed to the server. 
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.IGrpcConfiguration.MaximumConcurrentUpgradedConnections">
+            <summary>
+            The maximum number of concurrent connections, or multiplier by core count based on UseMultipleForConnectionCounts value, that are upgraded to HTTP2 or WebSockets allowed to the server. 
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.IGrpcConfiguration.KeepAliveTimeout">
+            <summary>
+            Gets or sets the keep alive timeout, defaulting to 2 minutes
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.IGrpcConfiguration.RequestHeadersTimeout">
+            <summary>
+            The maximum time the server will receive headers for, defaults to 30 seconds
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.IGrpcConfiguration.MaximumStreamsPerConnection">
+            <summary>
+            The maximum number of streams allowed per HTTP/2 connection, excess streams will be refused. This must be greater than 0. Defaults to 100
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.IGrpcConfiguration.ServerCertificate">
+            <summary>
+            The server certificate to use for HTTPS communications
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.IGrpcConfiguration.UnixSocketPath">
+            <summary>
+            If set the server will use a unix socket to listen on for improved performance on Linux with Nginx
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.IGrpcConfiguration.CheckCertificateRevocation">
+            <summary>
+            Determines whether the certificate revocation list is checked during authentication. Defaults to true.
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.IGrpcConfiguration.ClientCertificateMode">
+            <summary>
+            Specifies the client certificate requirements for the HTTPS connection, defaulting to NoCertificate
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.IGrpcConfiguration.EnableConnectionLogging">
+            <summary>
+            Used for debugging purposes to write verbose data from the connection to the debug stream. Defaults to false
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.IGrpcConfiguration.AllowSelfSigned">
+            <summary>
+            True if the Kestrel Server should accept self signed certificates
+            </summary>
+        </member>
+        <member name="T:praxicloud.grpc.server.IGrpcStartupConfiguration">
+            <summary>
+            Startup configuration details for GRPC Kestrel server
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.IGrpcStartupConfiguration.UseDeveloperExceptionPage">
+            <summary>
+            True if the developer execption page even in production. Defaults to false.
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.IGrpcStartupConfiguration.UseDeveloperExceptionPageNonProduction">
+            <summary>
+            True if the developer exception page should be used in development. If UseDeveloperExceptionPage is true this will be ignored and it will be enabled.
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.IGrpcStartupConfiguration.EnableNonGrpcWarningMessage">
+            <summary>
+            True if the GRPC warning should be sent to non GRPC requests (GET /)
+            </summary>
+        </member>
+        <member name="P:praxicloud.grpc.server.IGrpcStartupConfiguration.NonGrpcWarningMessage">
+            <summary>
+            If not null this string will be used as the warning response.
+            </summary>
+        </member>
+    </members>
+</doc>

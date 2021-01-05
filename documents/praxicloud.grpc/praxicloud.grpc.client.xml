@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>praxicloud.grpc.client</name>
+    </assembly>
+    <members>
+        <member name="T:praxicloud.grpc.client.GrpcClient">
+            <summary>
+            A helper class for GRPC clients 
+            </summary>
+        </member>
+        <member name="M:praxicloud.grpc.client.GrpcClient.GetChannel(System.Uri,Grpc.Net.Client.GrpcChannelOptions)">
+            <summary>
+            Gets a new channel from for communications with the server URI identified
+            </summary>
+            <param name="serverUri">The URI of the hosting GRPC server</param>
+            <param name="channelOptions">The options used to configure the channel</param>
+            <returns></returns>
+        </member>
+        <member name="M:praxicloud.grpc.client.GrpcClient.GetCallMetadata(System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            Converts a dictionary to a metadata object. If null or empty the Metadata object returned will be null;
+            </summary>
+            <param name="metadata">The metadata to be added for the call. Only byte[] and string types are used without conversion, all others use the ToString() function to present as a string.</param>
+            <returns>A populated metadata instance or null if empty</returns>
+        </member>
+        <member name="M:praxicloud.grpc.client.GrpcClient.GetCallOptions(Grpc.Core.Metadata,Grpc.Core.CallCredentials,System.Nullable{System.TimeSpan},System.Threading.CancellationToken)">
+            <summary>
+            Creates a populated call options instance based on the provided parameters
+            </summary>
+            <param name="metadata">The metadata to be added for the call.</param>
+            <param name="credentials">The credentials associated with the call</param>
+            <param name="timeout">The timespan to add to the current UTC time to act as the call deadline</param>
+            <param name="cancellationToken">A best effort cancellation token</param>
+            <returns>A call options instace</returns>
+        </member>
+        <member name="M:praxicloud.grpc.client.GrpcClient.GetChannelOptions(System.Int32,System.Func{System.Net.Http.HttpRequestMessage,System.Security.Cryptography.X509Certificates.X509Certificate2,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors,System.Boolean},System.Net.IWebProxy,Grpc.Core.ChannelCredentials)">
+            <summary>
+            Builds the common GRPC channel options for TLS 1.2 and HTTP/2
+            </summary>
+            <param name="maximumConcurrentConnections">The maximum number of concurrent connections allowed to a host</param>
+            <param name="remoteCertificateValidation">The remote certificate callback in use</param>
+            <param name="webProxy">The web proxy in use if one is required</param>
+            <param name="credentials">Credentials associated with the channel if provided</param>
+            <returns>A populated channel options instance</returns>
+        </member>
+        <member name="M:praxicloud.grpc.client.GrpcClient.GetChannelOptions(System.Int32,System.Boolean,System.Boolean,System.Net.IWebProxy,Grpc.Core.ChannelCredentials)">
+            <summary>
+            Builds the common GRPC channel options for TLS 1.2 and HTTP/2
+            </summary>
+            <param name="maximumConcurrentConnections">The maximum number of concurrent connections allowed to a host</param>
+            <param name="webProxy">The web proxy in use if one is required</param>
+            <param name="allowSelfSignedCertificates">True if self signed permissions should be allowed, ignored if remoteCertificateValidation is provided</param>
+            <param name="allowHostNameMismatch">True to allow the host name on the certificate mismatch when allow self signed is true. Not recommended for production.</param>
+            <param name="credentials">Credentials associated with the channel if provided</param>
+            <returns>A populated channel options instance</returns>
+        </member>
+        <member name="M:praxicloud.grpc.client.GrpcClient.ValidateServerCertificate(System.Net.Http.HttpRequestMessage,System.Security.Cryptography.X509Certificates.X509Certificate2,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors)">
+            <summary>
+            Performs client certificate validation
+            </summary>
+            <param name="certificate">The client provided certificate to validate</param>
+            <param name="chain">The certificate chain that is associated with the client certificate</param>
+            <param name="policyErrors">A list of policy errors</param>
+            <param name="requestMessage">The request message associated with the validation</param>
+            <returns>True if the certificate should be accepted</returns>
+        </member>
+        <member name="M:praxicloud.grpc.client.GrpcClient.ValidateServerCertificateAllowSelfSigned(System.Net.Http.HttpRequestMessage,System.Security.Cryptography.X509Certificates.X509Certificate2,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors)">
+            <summary>
+            Performs client certificate validation, allowing self signed
+            </summary>
+            <param name="certificate">The client provided certificate to validate</param>
+            <param name="chain">The certificate chain that is associated with the client certificate</param>
+            <param name="policyErrors">A list of policy errors</param>
+            <param name="requestMessage">The request message associated with the validation</param>
+            <returns>True if the certificate should be accepted</returns>
+        </member>
+        <member name="M:praxicloud.grpc.client.GrpcClient.ValidateServerCertificateAllowSelfSignedAndHostMismatch(System.Net.Http.HttpRequestMessage,System.Security.Cryptography.X509Certificates.X509Certificate2,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors)">
+            <summary>
+            Performs client certificate validation, allowing self signed
+            </summary>
+            <param name="certificate">The client provided certificate to validate</param>
+            <param name="chain">The certificate chain that is associated with the client certificate</param>
+            <param name="policyErrors">A list of policy errors</param>
+            <param name="requestMessage">The request message associated with the validation</param>
+            <returns>True if the certificate should be accepted</returns>
+        </member>
+    </members>
+</doc>

@@ -135,7 +135,7 @@ namespace praxicloud.grpc.client
             {
                 validationPolicy = ValidateServerCertificate;
             }
-            else if(allowHostNameMismatch)
+            else if (allowHostNameMismatch)
             {
                 validationPolicy = ValidateServerCertificateAllowSelfSignedAndHostMismatch;
             }
@@ -173,12 +173,12 @@ namespace praxicloud.grpc.client
         {
             var isValid = policyErrors == SslPolicyErrors.None;
 
-            if(!isValid)
+            if (!isValid)
             {
                 // If the only errors are chain specific errors review the chain
-                if((policyErrors & SslPolicyErrors.RemoteCertificateChainErrors) != 0 && (policyErrors & SslPolicyErrors.RemoteCertificateNameMismatch) == 0 && (policyErrors & SslPolicyErrors.RemoteCertificateNotAvailable) == 0)
+                if ((policyErrors & SslPolicyErrors.RemoteCertificateChainErrors) != 0 && (policyErrors & SslPolicyErrors.RemoteCertificateNameMismatch) == 0 && (policyErrors & SslPolicyErrors.RemoteCertificateNotAvailable) == 0)
                 {
-                    if(chain == null)
+                    if (chain == null)
                     {
                         // At this point the only errors in the certificate chain are untrusted root errors for self-signed certificates
                     }
@@ -186,7 +186,7 @@ namespace praxicloud.grpc.client
                     {
                         var isChainErrorFound = false;
 
-                        foreach(var status in chain.ChainStatus)
+                        foreach (var status in chain.ChainStatus)
                         {
                             // If there is an error that has the subject of the certificate being the same as the issuer and it is untrusted root error, with no others it is valid, otherwise an addition chain error was found
                             if (!((certificate.Subject == certificate.Issuer) && (status.Status == X509ChainStatusFlags.UntrustedRoot)) && (status.Status != X509ChainStatusFlags.NoError))

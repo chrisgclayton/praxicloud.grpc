@@ -5,8 +5,8 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>PraxiCloud-Grpc</PackageId>
-    <Description>PraxiCloud libraries offer a range of common functions, features and base classes to use when building solutions, increasing the time to delivery. This package offers a set of GRPC related utilities.</Description>
+    <PackageId>PraxiCloud-Grpc-Server</PackageId>
+    <Description>PraxiCloud libraries offer a range of common functions, features and base classes to use when building solutions, increasing the time to delivery. This package offers a set of GRPC Server related utilities.</Description>
     <PackageTags>praxicloud grpc kestrel server protobuf rpc</PackageTags>
     <PackageReleaseNotes>Initial release</PackageReleaseNotes>
     <AssemblyVersion>1.0.11.0</AssemblyVersion>
@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>..\..\documents\praxicloud.grpc\praxicloud.grpc.xml</DocumentationFile>
+    <DocumentationFile>..\..\documents\praxicloud.grpc\praxicloud.grpc.server.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,5 +26,5 @@
   <ItemGroup>
     <None Update="..\..\LICENSE" Link="LICENSE" />
   </ItemGroup>
-  
+
 </Project>
