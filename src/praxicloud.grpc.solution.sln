@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "praxicloud.grpc", "praxicloud.grpc\praxicloud.grpc.csproj", "{8A762A50-3234-424A-9D55-F5D15AF13D48}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "praxicloud.grpc.sample", "praxicloud.grpc.sample\praxicloud.grpc.sample.csproj", "{2E037C24-1F51-46BF-88DE-410DDF57DF52}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "praxicloud.grpc.sample.client", "praxicloud.grpc.sample.client\praxicloud.grpc.sample.client.csproj", "{22B3E232-7E43-46EC-893A-7039B8EE409A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8A762A50-3234-424A-9D55-F5D15AF13D48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A762A50-3234-424A-9D55-F5D15AF13D48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A762A50-3234-424A-9D55-F5D15AF13D48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A762A50-3234-424A-9D55-F5D15AF13D48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E037C24-1F51-46BF-88DE-410DDF57DF52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E037C24-1F51-46BF-88DE-410DDF57DF52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E037C24-1F51-46BF-88DE-410DDF57DF52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E037C24-1F51-46BF-88DE-410DDF57DF52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22B3E232-7E43-46EC-893A-7039B8EE409A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22B3E232-7E43-46EC-893A-7039B8EE409A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22B3E232-7E43-46EC-893A-7039B8EE409A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22B3E232-7E43-46EC-893A-7039B8EE409A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C879E888-7FB4-4E4C-AD8C-15E7CAA48355}
+	EndGlobalSection
+EndGlobal

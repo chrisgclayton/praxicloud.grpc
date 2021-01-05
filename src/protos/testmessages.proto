@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option csharp_namespace = "praxicloud.grpc.samples.messages";
+
+package PraxiCloudPipeline;
+
+service PraxiCloudPipelineService 
+{
+    rpc Test(TestRequest) returns (TestResponse) {};
+}
+
+message TestRequest
+{
+    string Message = 1;
+}
+
+message TestResponse
+{
+    string Message = 1;
+}
+
+
+
+

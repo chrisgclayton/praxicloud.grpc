@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>PraxiCloud-Grpc</PackageId>
+    <Description>PraxiCloud libraries offer a range of common functions, features and base classes to use when building solutions, increasing the time to delivery. This package offers a set of GRPC related utilities.</Description>
+    <PackageTags>praxicloud grpc kestrel server protobuf rpc</PackageTags>
+    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <AssemblyVersion>1.0.11.0</AssemblyVersion>
+    <FileVersion>1.0.11.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>..\..\documents\praxicloud.grpc\praxicloud.grpc.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.34.0" />
+    <PackageReference Include="PraxiCloud-Core" Version="5.0.0" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="..\..\LICENSE" Link="LICENSE" />
+  </ItemGroup>
+  
+</Project>
